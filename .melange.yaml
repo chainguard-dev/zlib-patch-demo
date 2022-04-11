@@ -1,7 +1,7 @@
 package:
   name: zlib
   version: 1.2.11
-  epoch: 0
+  epoch: 1
   description: "zlib library"
   target-architecture:
     - all
@@ -12,6 +12,12 @@ package:
       license: Zlib
   dependencies:
     runtime:
+
+# The secfixes section is used to generate a VEX feed for
+# scanners to consume.
+secfixes:
+  '1.2.11-r1':
+     - CVE-2018-25032
 
 environment:
   contents:
@@ -34,6 +40,9 @@ pipeline:
     with:
       uri: https://zlib.net/fossils/${{package.name}}-${{package.version}}.tar.gz
       expected-sha256: c3e5e9fdd5004dcb542feda5ee4f0ff0744628baf8ed2dd5d66f8ca1197cb1a1
+  - uses: patch
+    with:
+      patches: CVE-2018-25032.patch
   - runs: |
       ./configure --prefix=/usr --libdir=/lib --shared
   - uses: autoconf/make
